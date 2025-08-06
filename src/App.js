@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import styles from './App.module.css';
+import CertificateCard from './components/CertificateCard';
+import certificates from './components/data/certificates';
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredCertificates = certificates.filter(cert =>
+    cert.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>My Certificates</h1>
+
+      <div className={styles.search}>
+        <input
+          type="text"
+          placeholder="Search certificates..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      {filteredCertificates.length > 0 ? (
+        <div className={styles.grid}>
+          {filteredCertificates.map(cert => (
+            <CertificateCard key={cert.id} cert={cert} />
+          ))}
+        </div>
+      ) : (
+        <p className={styles.noResult}>No certificates found.</p>
+      )}
     </div>
   );
 }
